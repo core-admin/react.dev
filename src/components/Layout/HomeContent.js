@@ -136,7 +136,7 @@ export function HomeContent() {
             React
           </h1>
           <p className="text-4xl font-display max-w-lg md:max-w-full py-1 text-center text-secondary dark:text-primary-dark leading-snug self-center">
-            The library for web and native user interfaces
+            用于构建 Web 和原生交互界面的库
           </p>
           <div className="mt-5 self-center flex gap-2 w-full sm:w-auto flex-col sm:flex-row">
             <ButtonLink
@@ -145,7 +145,7 @@ export function HomeContent() {
               size="lg"
               className="w-full sm:w-auto justify-center"
               label="Learn React">
-              Learn React
+              学习 React
             </ButtonLink>
             <ButtonLink
               href={'/reference/react'}
@@ -153,20 +153,18 @@ export function HomeContent() {
               size="lg"
               className="w-full sm:w-auto justify-center"
               label="API Reference">
-              API Reference
+              API 参考
             </ButtonLink>
           </div>
         </div>
 
         <Section background="left-card">
           <Center>
-            <Header>Create user interfaces from components</Header>
+            <Header>用组件创建用户界面</Header>
             <Para>
-              React lets you build user interfaces out of individual pieces
-              called components. Create your own React components like{' '}
-              <Code>Thumbnail</Code>, <Code>LikeButton</Code>, and{' '}
-              <Code>Video</Code>. Then combine them into entire screens, pages,
-              and apps.
+              React 让你可以通过组件来构建用户界面。 你可以创建像{' '}
+              <Code>Thumbnail</Code>、<Code>LikeButton</Code>和{' '}
+              <Code>Video</Code>这样的组件。然后将它们组合成整个应用程序。
             </Para>
           </Center>
           <FullBleed>
@@ -174,22 +172,20 @@ export function HomeContent() {
           </FullBleed>
           <Center>
             <Para>
-              Whether you work on your own or with thousands of other
-              developers, using React feels the same. It is designed to let you
-              seamlessly combine components written by independent people,
-              teams, and organizations.
+              无论你是独自一人还是与成千上万的其他开发者合作，使用 React
+              的体验都是一致的。它的设计旨在让你能够无缝地结合由不同人、团队和组织编写的组件。
             </Para>
           </Center>
         </Section>
 
         <Section background="right-card">
           <Center>
-            <Header>Write components with code and markup</Header>
+            <Header>用代码和标签编写组件</Header>
             <Para>
-              React components are JavaScript functions. Want to show some
-              content conditionally? Use an <Code>if</Code> statement.
-              Displaying a list? Try array <Code>map()</Code>. Learning React is
-              learning programming.
+              React 组件实际上是 JavaScript
+              函数。如果想要有条件地显示某些内容，可以使用 <Code>if</Code>{' '}
+              语句。 如果要显示一个列表，可以尝试使用数组的 <Code>map()</Code>{' '}
+              方法。学习 React 就等于在学习编程。
             </Para>
           </Center>
           <FullBleed>
@@ -197,22 +193,20 @@ export function HomeContent() {
           </FullBleed>
           <Center>
             <Para>
-              This markup syntax is called JSX. It is a JavaScript syntax
-              extension popularized by React. Putting JSX markup close to
-              related rendering logic makes React components easy to create,
-              maintain, and delete.
+              这种标签语法被称为 JSX。它是 React 推广的一种 JavaScript
+              语法扩展。将 JSX 标签与相关的渲染逻辑紧密结合，使得 React
+              组件的创建、维护和删除都变得简单。
             </Para>
           </Center>
         </Section>
 
         <Section background="left-card">
           <Center>
-            <Header>Add interactivity wherever you need it</Header>
+            <Header>在需要的地方添加交互性</Header>
             <Para>
-              React components receive data and return what should appear on the
-              screen. You can pass them new data in response to an interaction,
-              like when the user types into an input. React will then update the
-              screen to match the new data.
+              React
+              组件接收数据并返回在屏幕上应显示的内容。你可以在用户与界面互动时传递新数据，比如用户在输入框中输入内容时。React
+              会根据新数据更新屏幕显示。
             </Para>
           </Center>
           <FullBleed>
@@ -220,16 +214,15 @@ export function HomeContent() {
           </FullBleed>
           <Center>
             <Para>
-              You don’t have to build your whole page in React. Add React to
-              your existing HTML page, and render interactive React components
-              anywhere on it.
+              你也可以不用 React 去构建整个页面，而只是将 React 添加到现有的
+              HTML 页面中，并在任何地方渲染交互式的 React 组件。
             </Para>
             <div className="flex justify-start w-full lg:justify-center">
               <CTA
                 color="gray"
                 icon="code"
                 href="/learn/add-react-to-an-existing-project">
-                Add React to your page
+                将 React 添加到你已有的页面中
               </CTA>
             </div>
           </Center>
@@ -238,15 +231,16 @@ export function HomeContent() {
         <Section background="right-card">
           <Center>
             <Header>
-              Go full-stack <br className="hidden lg:inline" />
-              with a framework
+              使用框架
+              <br className="hidden lg:inline" />
+              进行全栈开发
             </Header>
             <Para>
-              React is a library. It lets you put components together, but it
-              doesn’t prescribe how to do routing and data fetching. To build an
-              entire app with React, we recommend a full-stack React framework
-              like <Link href="https://nextjs.org">Next.js</Link> or{' '}
-              <Link href="https://remix.run">Remix</Link>.
+              React 是一个库，它允许你将组件组合在一起，但不关注路由和数据获取。
+              如果想用 React 构建完整的应用程序，我们推荐使用像{' '}
+              <Link href="https://nextjs.org">Next.js</Link> 或{' '}
+              <Link href="https://remix.run">Remix</Link> 这样的全栈 React
+              框架。
             </Para>
           </Center>
           <FullBleed>
@@ -254,17 +248,15 @@ export function HomeContent() {
           </FullBleed>
           <Center>
             <Para>
-              React is also an architecture. Frameworks that implement it let
-              you fetch data in asynchronous components that run on the server
-              or even during the build. Read data from a file or a database, and
-              pass it down to your interactive components.
+              React
+              也是一种架构。实现这种架构的框架允许你在服务器或构建期间的异步组件中获取数据。你可以从文件或数据库中读取数据，并将其传递给交互式组件。
             </Para>
             <div className="flex justify-start w-full lg:justify-center">
               <CTA
                 color="gray"
                 icon="framework"
                 href="/learn/start-a-new-react-project">
-                Get started with a framework
+                开始使用框架
               </CTA>
             </div>
           </Center>
@@ -272,12 +264,11 @@ export function HomeContent() {
         <Section background="left-card">
           <div className="mx-auto flex flex-col w-full">
             <div className="mx-auto max-w-4xl lg:text-center items-center px-5 flex flex-col">
-              <Header>Use the best from every platform</Header>
+              <Header>利用每个平台的优势</Header>
               <Para>
-                People love web and native apps for different reasons. React
-                lets you build both web apps and native apps using the same
-                skills. It leans upon each platform’s unique strengths to let
-                your interfaces feel just right on every platform.
+                人们因为不同的原因偏好 Web 应用或原生应用。React
+                让你使用相同的技能构建 Web
+                应用程序和原生应用程序。它依赖于每个平台独特的优势，使你的界面就像原生一样。
               </Para>
             </div>
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row mt-16 mb-20 lg:mb-28 px-5 gap-20 lg:gap-5">
@@ -291,15 +282,14 @@ export function HomeContent() {
                     <div className="bg-wash relative h-14 w-full" />
                     <div className="relative flex items-start justify-center flex-col flex-1 pb-16 pt-5 gap-3 px-5 lg:px-10 lg:pt-8">
                       <h4 className="leading-tight text-primary font-semibold text-3xl lg:text-4xl">
-                        Stay true to the web
+                        不忘初心
                       </h4>
                       <p className="lg:text-xl leading-normal text-secondary">
-                        People expect web app pages to load fast. On the server,
-                        React lets you start streaming HTML while you’re still
-                        fetching data, progressively filling in the remaining
-                        content before any JavaScript code loads. On the client,
-                        React can use standard web APIs to keep your UI
-                        responsive even in the middle of rendering.
+                        人们期望网络应用的页面加载速度快。在服务器端，React
+                        允许你在获取数据时开始流式传输
+                        HTML，逐步填充剩余内容，而无需等待 JavaScript
+                        代码加载。在客户端，React 可以利用标准的 Web
+                        API，即使在渲染过程中也能保持用户界面的响应。
                       </p>
                     </div>
                   </div>
@@ -377,21 +367,19 @@ export function HomeContent() {
                       </div>
                       <div className="flex flex-col items-start justify-center pt-0 gap-3 px-2.5 lg:pt-8 lg:px-8">
                         <h4 className="leading-tight text-primary dark:text-primary-dark font-semibold text-3xl lg:text-4xl">
-                          Go truly native
+                          开发真正的原生应用
                         </h4>
                         <p className="h-full lg:text-xl text-secondary dark:text-secondary-dark leading-normal">
-                          People expect native apps to look and feel like their
-                          platform.{' '}
+                          人们希望原生应用程序都有和自己使用的平台相一致的体验。{' '}
                           <Link href="https://reactnative.dev">
                             React Native
                           </Link>{' '}
-                          and{' '}
+                          和{' '}
                           <Link href="https://github.com/expo/expo">Expo</Link>{' '}
-                          let you build apps in React for Android, iOS, and
-                          more. They look and feel native because their UIs{' '}
-                          <i>are</i> truly native. It’s not a web view—your
-                          React components render real Android and iOS views
-                          provided by the platform.
+                          让你可以使用 React 构建 Android、iOS
+                          等应用程序。它们的样式和体验都和原生应用程序一样，因为它们的用户界面是真正的原生用户界面。这不是一个
+                          Web 视图——你的 React 组件由平台提供的真实 Android 或
+                          iOS 视图来渲染。
                         </p>
                       </div>
                     </div>
@@ -401,14 +389,12 @@ export function HomeContent() {
             </div>
             <div className="px-5 lg:px-0 max-w-4xl mx-auto lg:text-center text-secondary dark:text-secondary-dark">
               <Para>
-                With React, you can be a web <i>and</i> a native developer. Your
-                team can ship to many platforms without sacrificing the user
-                experience. Your organization can bridge the platform silos, and
-                form teams that own entire features end-to-end.
+                使用 React，你可以成为 Web 和原生应用的开发人员。
+                你的团队可以在不牺牲用户体验的情况下发布到各个平台。你的团队可以忽略平台差异，并拥有端到端的全部功能。
               </Para>
               <div className="flex justify-start w-full lg:justify-center">
                 <CTA color="gray" icon="native" href="https://reactnative.dev/">
-                  Build for native platforms
+                  为原生平台构建
                 </CTA>
               </div>
             </div>

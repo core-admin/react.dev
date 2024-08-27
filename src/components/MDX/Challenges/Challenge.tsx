@@ -63,14 +63,14 @@ export function Challenge({
           <div>
             <Button className="me-2" onClick={toggleHint} active={showHint}>
               <IconHint className="me-1.5" />{' '}
-              {showHint ? 'Hide hint' : 'Show hint'}
+              {showHint ? '隐藏提示' : '显示提示'}
             </Button>
             <Button
               className="me-2"
               onClick={toggleSolution}
               active={showSolution}>
               <IconSolution className="me-1.5" />{' '}
-              {showSolution ? 'Hide solution' : 'Show solution'}
+              {showSolution ? '隐藏答案' : '显示答案'}
             </Button>
           </div>
         ) : (
@@ -80,7 +80,7 @@ export function Challenge({
               onClick={toggleSolution}
               active={showSolution}>
               <IconSolution className="me-1.5" />{' '}
-              {showSolution ? 'Hide solution' : 'Show solution'}
+              {showSolution ? '隐藏答案' : '显示答案'}
             </Button>
           )
         )}
@@ -118,7 +118,7 @@ export function Challenge({
                 )}
                 onClick={handleClickNextChallenge}
                 active>
-                Next Challenge
+                下一个挑战
                 <IconArrowSmall
                   displayDirection="end"
                   className="block ms-1.5"

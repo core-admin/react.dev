@@ -1,10 +1,10 @@
 ---
-title: 'Lifecycle of Reactive Effects'
+title: '响应式 Effect 的生命周期'
 ---
 
 <Intro>
 
-Effects have a different lifecycle from components. Components may mount, update, or unmount. An Effect can only do two things: to start synchronizing something, and later to stop synchronizing it. This cycle can happen multiple times if your Effect depends on props and state that change over time. React provides a linter rule to check that you've specified your Effect's dependencies correctly. This keeps your Effect synchronized to the latest props and state.
+Effect 的生命周期与组件的生命周期是不同的。组件可能会经历挂载、更新或卸载的过程，而 Effect 则只能执行两项操作：开始同步某些内容，然后停止同步。这一过程可能会多次发生，特别是当你的 Effect 依赖于随时间变化的 props 和状态时。为了确保 Effect 能够与最新的 props 和状态保持同步，React 提供了一条 linter 规则，帮助你检查是否正确指定了效应的依赖关系。
 
 </Intro>
 

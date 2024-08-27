@@ -186,11 +186,11 @@
           "path": "/learn/synchronizing-with-effects"
         },
         {
-          "title": "You Might Not Need an Effect",
+          "title": "你可能不需要 Effect",
           "path": "/learn/you-might-not-need-an-effect"
         },
         {
-          "title": "Lifecycle of Reactive Effects",
+          "title": "响应式 Effect 的生命周期",
           "path": "/learn/lifecycle-of-reactive-effects"
         },
         {

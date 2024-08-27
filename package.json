@@ -36,9 +36,9 @@
     "next": "^13.4.1",
     "next-remote-watch": "^1.0.0",
     "parse-numeric-range": "^1.2.0",
-    "react": "^0.0.0-experimental-16d053d59-20230506",
+    "react": "^18.2.0",
     "react-collapsed": "4.0.4",
-    "react-dom": "^0.0.0-experimental-16d053d59-20230506",
+    "react-dom": "^18.2.0",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1"
   },

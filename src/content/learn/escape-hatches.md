@@ -191,7 +191,7 @@ Read **[Synchronizing with Effects](/learn/synchronizing-with-effects)** to lear
 
 </LearnMore>
 
-## You Might Not Need An Effect {/*you-might-not-need-an-effect*/}
+## 你可能不需要 Effect {/*you-might-not-need-an-effect*/}
 
 Effects are an escape hatch from the React paradigm. They let you "step outside" of React and synchronize your components with some external system. If there is no external system involved (for example, if you want to update a component's state when some props or state change), you shouldn't need an Effect. Removing unnecessary Effects will make your code easier to follow, faster to run, and less error-prone.
 
@@ -235,7 +235,7 @@ Read **[You Might Not Need an Effect](/learn/you-might-not-need-an-effect)** to 
 
 </LearnMore>
 
-## Lifecycle of reactive effects {/*lifecycle-of-reactive-effects*/}
+## 响应式 Effect 的生命周期 {/*lifecycle-of-reactive-effects*/}
 
 Effects have a different lifecycle from components. Components may mount, update, or unmount. An Effect can only do two things: to start synchronizing something, and later to stop synchronizing it. This cycle can happen multiple times if your Effect depends on props and state that change over time.
 
