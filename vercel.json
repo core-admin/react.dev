@@ -200,5 +200,11 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "BRANCH": "zh-cn"
+  },
+  "scripts": {
+    "vercel-deploy": "if [ \"$BRANCH\" != \"main\" ]; then echo \"Cannot deploy from $BRANCH branch\"; exit 1; fi"
+  }
 }
