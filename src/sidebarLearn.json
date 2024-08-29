@@ -15,7 +15,7 @@
           "path": "/learn/tutorial-tic-tac-toe"
         },
         {
-          "title": "Thinking in React",
+          "title": "React 哲学",
           "path": "/learn/thinking-in-react"
         }
       ]
@@ -174,7 +174,7 @@
       "tags": ["advanced"],
       "routes": [
         {
-          "title": "Referencing Values with Refs",
+          "title": "使用 ref 引用值",
           "path": "/learn/referencing-values-with-refs"
         },
         {
