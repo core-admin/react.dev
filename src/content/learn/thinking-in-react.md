@@ -49,7 +49,7 @@ React 可以改变你对设计和应用开发的思维方式。当你使用 Reac
 
 <CodeDiagram flip>
 
-<img src="/images/docs/s_thinking-in-react_ui_outline.png" width="500" style={{margin: '0 auto'}} />
+  <img src="/images/docs/s_thinking-in-react_ui_outline.png" width="500" style={{margin: '0 auto'}} />
 
 1. `FilterableProductTable`（灰色）是整个应用的容器。
 2. `SearchBar`（蓝色）负责接收用户输入。
@@ -442,8 +442,6 @@ td {
 <ConsoleBlock level="error">
 
 You provided a \`value\` prop to a form field without an \`onChange\` handler. This will render a read-only field.
-
-你为表单字段提供了一个 `value` props，但没有添加 `onChange` 处理程序。这将导致该字段变为只读。
 
 </ConsoleBlock>
 

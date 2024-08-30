@@ -577,11 +577,11 @@ button { display: block; margin: 10px; }
 
 </Solution>
 
-#### Read the latest state {/*read-the-latest-state*/}
+#### 读取最新的 state {/*read-the-latest-state*/}
 
-In this example, after you press "Send", there is a small delay before the message is shown. Type "hello", press Send, and then quickly edit the input again. Despite your edits, the alert would still show "hello" (which was the value of state [at the time](/learn/state-as-a-snapshot#state-over-time) the button was clicked).
+在这个例子中，当你按下“发送”按钮时，在显示消息之前会有一小段延迟。你可以输入“hello”，然后按下发送，再快速编辑输入内容。尽管你进行了更改，警报依然会显示“hello”（这是在你点击按钮时的状态值 [当时的状态](/learn/state-as-a-snapshot#state-over-time)）。
 
-Usually, this behavior is what you want in an app. However, there may be occasional cases where you want some asynchronous code to read the *latest* version of some state. Can you think of a way to make the alert show the *current* input text rather than what it was at the time of the click?
+这种行为在应用中通常是你所期望的。然而，有时你可能希望某些异步代码能够读取到某个状态的*最新*版本。你能想出什么方法来让警报显示*当前*的输入文本，而不是点击时的文本吗？
 
 <Sandpack>
 
@@ -616,7 +616,7 @@ export default function Chat() {
 
 <Solution>
 
-State works [like a snapshot](/learn/state-as-a-snapshot), so you can't read the latest state from an asynchronous operation like a timeout. However, you can keep the latest input text in a ref. A ref is mutable, so you can read the `current` property at any time. Since the current text is also used for rendering, in this example, you will need *both* a state variable (for rendering), *and* a ref (to read it in the timeout). You will need to update the current ref value manually.
+state 的工作原理 [就像快照](/learn/state-as-a-snapshot)，因此你无法通过像超时这样的异步操作来读取最新的状态。不过，你可以将最新的输入文本保存在一个 ref 中。ref 是可变的，因此你可以随时访问它的 `current` 属性。由于当前的文本也会用于渲染，因此在这个例子中，你需要同时使用一个状态变量（用于渲染）和一个 ref（用于在超时中读取）。你需要手动更新当前的 ref 值。
 
 <Sandpack>
 
