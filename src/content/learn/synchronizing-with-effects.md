@@ -592,22 +592,22 @@ input { display: block; margin-bottom: 20px; }
 
 ## 如何处理在开发环境中 Effect 执行两次？ {/*how-to-handle-the-effect-firing-twice-in-development*/}
 
-React intentionally remounts your components in development to find bugs like in the last example. **The right question isn't "how to run an Effect once", but "how to fix my Effect so that it works after remounting".**
+在开发环境中，React 有意重复挂载你的组件，以发现像上一个示例中的错误。**正确的态度是“如何修复 Effect 以便它在重复挂载后能正常工作”，而不是“如何只运行一次 Effect”。**
 
-Usually, the answer is to implement the cleanup function.  The cleanup function should stop or undo whatever the Effect was doing. The rule of thumb is that the user shouldn't be able to distinguish between the Effect running once (as in production) and a _setup → cleanup → setup_ sequence (as you'd see in development).
+通常的解决办法是实现清理函数。清理函数应该停止或撤销 Effect 正在做的事情。简单来说，用户不应该感受到 Effect 只执行一次（如在生产环境中）和执行 _挂载 → 清理 → 挂载_ 过程（如在开发环境中）之间的差异。
 
-Most of the Effects you'll write will fit into one of the common patterns below.
+下面提供一些常用的 Effect 应用模式。
 
 <Pitfall>
 
-#### Don't use refs to prevent Effects from firing {/*dont-use-refs-to-prevent-effects-from-firing*/}
+#### 不要使用 refs 来防止触发 Effects {/*dont-use-refs-to-prevent-effects-from-firing*/}
 
-A common pitfall for preventing Effects firing twice in development is to use a `ref` to prevent the Effect from running more than once. For example, you could "fix" the above bug with a `useRef`:
+在开发过程中，防止 Effects 触发两次的一个常见陷阱是使用 `ref` 来防止 Effect 运行多次。例如，你使用 `useRef` “修复”上面的错误：
 
 ```js {1,3-4}
   const connectionRef = useRef(null);
   useEffect(() => {
-    // 🚩 This wont fix the bug!!!
+    // 🚩 这并不能修复这个错误！！！
     if (!connectionRef.current) {
       connectionRef.current = createConnection();
       connectionRef.current.connect();
@@ -615,19 +615,19 @@ A common pitfall for preventing Effects firing twice in development is to use a 
   }, []);
 ```
 
-This makes it so you only see `"✅ Connecting..."` once in development, but it doesn't fix the bug.
+这使得你在开发过程中确实只看到了一次 `"✅ Connecting..."`，但其实并没有修复这个错误。
 
-When the user navigates away, the connection still isn't closed and when they navigate back, a new connection is created. As the user navigates across the app, the connections would keep piling up, the same as it would before the "fix". 
+当用户导航离开时，连接仍然没有关闭，当他们返回时，将创建一个新连接。随着用户在应用中导航，连接将不断堆积，就像“修复”之前一样。
 
-To fix the bug, it is not enough to just make the Effect run once. The effect needs to work after re-mounting, which means the connection needs to be cleaned up like in the solution above.
+要修复错误，仅仅使 Effect 运行一次是不够的。Effect 需要在重新挂载后正常工作，这意味着需要像上面的解决方案一样清理连接。
 
-See the examples below for how to handle common patterns.
+请参阅下面的示例，了解如何处理常见模式。
 
 </Pitfall>
 
-### Controlling non-React widgets {/*controlling-non-react-widgets*/}
+### 控制非 React 组件 {/*controlling-non-react-widgets*/}
 
-Sometimes you need to add UI widgets that aren't written to React. For example, let's say you're adding a map component to your page. It has a `setZoomLevel()` method, and you'd like to keep the zoom level in sync with a `zoomLevel` state variable in your React code. Your Effect would look similar to this:
+有时需要添加不是使用 React 编写的 UI 小部件。例如，假设您要在页面上添加一个地图组件。它有一个 `setZoomLevel()` 方法，您希望将缩放级别与 React 代码中的 `zoomLevel` 状态变量保持同步。Effect 看起来应该与下面类似：
 
 ```js
 useEffect(() => {
@@ -636,9 +636,9 @@ useEffect(() => {
 }, [zoomLevel]);
 ```
 
-Note that there is no cleanup needed in this case. In development, React will call the Effect twice, but this is not a problem because calling `setZoomLevel` twice with the same value does not do anything. It may be slightly slower, but this doesn't matter because it won't remount needlessly in production.
+请注意，在这种情况下不需要清理。在开发中，React 将调用 Effect 两次，但这不是问题，这两次挂载时依赖项 `setZoomLevel` 都是相同的，所以即使执行两次 Effect，也不会造成任何影响。它可能会稍慢，但这没关系，因为在生产中不会进行不必要地重新挂载。
 
-Some APIs may not allow you to call them twice in a row. For example, the [`showModal`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal) method of the built-in [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement) element throws if you call it twice. Implement the cleanup function and make it close the dialog:
+某些 API 可能不允许您连续两次调用它们。例如，内置的 [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement) 元素的 [`showModal`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal) 方法如果您调用两次会抛出异常。此时实现清理函数并使其关闭对话框：
 
 ```js {4}
 useEffect(() => {
@@ -648,11 +648,11 @@ useEffect(() => {
 }, []);
 ```
 
-In development, your Effect will call `showModal()`, then immediately `close()`, and then `showModal()` again. This has the same user-visible behavior as calling `showModal()` once, as you would see in production.
+在开发中，您的 Effect 将调用 `showModal()`，然后立即 `close()`，然后再次 `showModal()`。这与调用只一次 `showModal()` 的效果相同。也正如在生产环境中看到的那样。
 
-### Subscribing to events {/*subscribing-to-events*/}
+### 订阅事件 {/*subscribing-to-events*/}
 
-If your Effect subscribes to something, the cleanup function should unsubscribe:
+如果 Effect 订阅了某些事件，清理函数应该退订这些事件：
 
 ```js {6}
 useEffect(() => {
@@ -664,27 +664,27 @@ useEffect(() => {
 }, []);
 ```
 
-In development, your Effect will call `addEventListener()`, then immediately `removeEventListener()`, and then `addEventListener()` again with the same handler. So there would be only one active subscription at a time. This has the same user-visible behavior as calling `addEventListener()` once, as in production.
+在开发中，您的 Effect 将调用 `addEventListener()`，然后立即 `removeEventListener()`，然后再次调用 `addEventListener()`，并使用相同的处理程序。因此，始终只有一个活动订阅。这具有与在生产中仅调用一次 `addEventListener()` 相同的用户可见行为。
 
-### Triggering animations {/*triggering-animations*/}
+### 触发动画 {/*triggering-animations*/}
 
-If your Effect animates something in, the cleanup function should reset the animation to the initial values:
+如果 Effect 对某些内容加入了动画，清理函数应将动画重置：
 
 ```js {4-6}
 useEffect(() => {
   const node = ref.current;
-  node.style.opacity = 1; // Trigger the animation
+  node.style.opacity = 1; // 触发动画
   return () => {
-    node.style.opacity = 0; // Reset to the initial value
+    node.style.opacity = 0; // 重置为初始值
   };
 }, []);
 ```
 
-In development, opacity will be set to `1`, then to `0`, and then to `1` again. This should have the same user-visible behavior as setting it to `1` directly, which is what would happen in production. If you use a third-party animation library with support for tweening, your cleanup function should reset the timeline to its initial state.
+在开发环境中，透明度由 `1` 变为 `0`，再变为 `1`。这与在生产环境中，直接将其设置为 `1` 具有相同的感知效果，如果你使用支持过渡的第三方动画库，你的清理函数应将时间轴重置为其初始状态。
 
-### Fetching data {/*fetching-data*/}
+### 获取数据 {/*fetching-data*/}
 
-If your Effect fetches something, the cleanup function should either [abort the fetch](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) or ignore its result:
+如果 Effect 将会获取数据，清理函数应该要么 [中止该数据的获取操作](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) 或忽略其结果：
 
 ```js {2,6,13-15}
 useEffect(() => {
@@ -705,11 +705,11 @@ useEffect(() => {
 }, [userId]);
 ```
 
-You can't "undo" a network request that already happened, but your cleanup function should ensure that the fetch that's _not relevant anymore_ does not keep affecting your application. If the `userId` changes from `'Alice'` to `'Bob'`, cleanup ensures that the `'Alice'` response is ignored even if it arrives after `'Bob'`.
+我们无法撤消已经发生的网络请求，但是清理函数应当确保获取数据的过程以及获取到的结果不会继续影响程序运行。如果 `userId` 从 `'Alice'` 变为 `'Bob'`，那么请确保 `Alice` 响应数据被忽略，即使它在 `'Bob'` 之后到达。
 
-**In development, you will see two fetches in the Network tab.** There is nothing wrong with that. With the approach above, the first Effect will immediately get cleaned up so its copy of the `ignore` variable will be set to `true`. So even though there is an extra request, it won't affect the state thanks to the `if (!ignore)` check.
+**在开发环境中，浏览器调试工具的“网络”选项卡中会出现两个 fetch 请求。** 这是正常的。使用上述方法，第一个 Effect 将立即被清理，因此它的 `ignore` 变量将被设置为 `true`。因此，即使有额外的请求，由于 `if (!ignore)` 检查，它也不会影响程序状态。
 
-**In production, there will only be one request.** If the second request in development is bothering you, the best approach is to use a solution that deduplicates requests and caches their responses between components:
+**在生产环境中，只会有一个请求。** 如果开发中的第二个请求让您感到困扰，最好的方法是使用去重请求并在组件之间缓存响应的解决方案：
 
 ```js
 function TodoList() {
@@ -717,35 +717,35 @@ function TodoList() {
   // ...
 ```
 
-This will not only improve the development experience, but also make your application feel faster. For example, the user pressing the Back button won't have to wait for some data to load again because it will be cached. You can either build such a cache yourself or use one of the many alternatives to manual fetching in Effects.
+这不仅会改善开发体验，还会让您的应用程序感觉更快。例如，用户按下返回按钮时，不必等待某些数据再次加载，因为它将被缓存。您可以自己构建这样的缓存，也可以使用很多在 Effect 中手动加载数据的替代方法。
 
 <DeepDive>
 
-#### What are good alternatives to data fetching in Effects? {/*what-are-good-alternatives-to-data-fetching-in-effects*/}
+#### Effect 中有哪些好的数据获取替代方案？ {/*what-are-good-alternatives-to-data-fetching-in-effects*/}
 
-Writing `fetch` calls inside Effects is a [popular way to fetch data](https://www.robinwieruch.de/react-hooks-fetch-data/), especially in fully client-side apps. This is, however, a very manual approach and it has significant downsides:
+在 Effects 中编写 `fetch` 请求是一种 [流行的数据获取方式](https://www.robinwieruch.de/react-hooks-fetch-data/)，特别是在客户端应用中。然而，这是一种非常手动的方法，并且有显著的缺点：
 
-- **Effects don't run on the server.** This means that the initial server-rendered HTML will only include a loading state with no data. The client computer will have to download all JavaScript and render your app only to discover that now it needs to load the data. This is not very efficient.
-- **Fetching directly in Effects makes it easy to create "network waterfalls".** You render the parent component, it fetches some data, renders the child components, and then they start fetching their data. If the network is not very fast, this is significantly slower than fetching all data in parallel.
-- **Fetching directly in Effects usually means you don't preload or cache data.** For example, if the component unmounts and then mounts again, it would have to fetch the data again.
-- **It's not very ergonomic.** There's quite a bit of boilerplate code involved when writing `fetch` calls in a way that doesn't suffer from bugs like [race conditions.](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect)
+- **Effect 不能在服务端执行。** 这这意味着服务器最初传递的 HTML 不会包含任何数据。客户端的浏览器必须下载所有 JavaScript 脚本来渲染应用程序，然后才能加载数据——这并不高效。
+- **直接在 Effect 中获取数据容易产生网络瀑布（network waterfall）。** 首先渲染了父组件，它会获取一些数据并进行渲染；然后渲染子组件，接着子组件开始获取它们的数据。如果网络速度不够快，这种方式比同时获取所有数据要慢得多。
+- **直接在 Effect 中获取数据通常意味着无法预加载或缓存数据。** 例如，在组件卸载后然后再次挂载，那么它必须再次获取数据。
+- **这不是很符合人机交互原则（不方便）。** 如果你不想出现像 [条件竞争](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect) 之类的问题，那么你需要编写更多的样板代码。
 
-This list of downsides is not specific to React. It applies to fetching data on mount with any library. Like with routing, data fetching is not trivial to do well, so we recommend the following approaches:
+以上所列出来的缺点并不是 React 特有的。在任何框架或者库上的组件挂载过程中获取数据，都会遇到这些问题。与路由一样，要做好数据获取并非易事，因此我们推荐以下方法：
 
-- **If you use a [framework](/learn/start-a-new-react-project#production-grade-react-frameworks), use its built-in data fetching mechanism.** Modern React frameworks have integrated data fetching mechanisms that are efficient and don't suffer from the above pitfalls.
-- **Otherwise, consider using or building a client-side cache.** Popular open source solutions include [React Query](https://tanstack.com/query/latest), [useSWR](https://swr.vercel.app/), and [React Router 6.4+.](https://beta.reactrouter.com/en/main/start/overview) You can build your own solution too, in which case you would use Effects under the hood, but add logic for deduplicating requests, caching responses, and avoiding network waterfalls (by preloading data or hoisting data requirements to routes).
+- **如果您使用 [框架](/learn/start-a-new-react-project#production-grade-react-frameworks)，请使用其内置的数据获取机制。** 现代 React 框架内置了高效的数据获取机制，避免了上述缺点。
+- **否则，考虑使用或构建客户端缓存。** 流行的开源解决方案包括 [React Query](https://tanstack.com/query/latest)、[useSWR](https://swr.vercel.app/) 和 [React Router 6.4+](https://beta.reactrouter.com/en/main/start/overview)。您也可以构建自己的解决方案，在这种情况下，你可以在幕后使用 Effect，但是请注意添加用于删除重复请求、缓存响应和避免网络瀑布的逻辑（通过预加载数据或将数据需求提升到路由）。
 
-You can continue fetching data directly in Effects if neither of these approaches suit you.
+如果这些方法都不适合你，你可以继续直接在 Effect 中获取数据。
 
 </DeepDive>
 
-### Sending analytics {/*sending-analytics*/}
+### 发送分析报告 {/*sending-analytics*/}
 
-Consider this code that sends an analytics event on the page visit:
+考虑在访问页面时发送日志分析：
 
 ```js
 useEffect(() => {
-  logVisit(url); // Sends a POST request
+  logVisit(url); // 发送 POST 请求
 }, [url]);
 ```
 
@@ -1606,3 +1606,180 @@ In addition to ignoring the result of an outdated API call, you can also use [`A
 
 </Challenges>
 
+```
+如何处理开发中 Effect 两次触发的问题？
+
+在开发环境中，React 有意重复挂载你的组件，以发现像上一个示例中的错误。**正确的态度是“如何修复 Effect 以便它在重复挂载后能正常工作”，而不是“如何只运行一次 Effect”。**
+
+通常的解决办法是实现清理函数。清理函数应该停止或撤销 Effect 正在做的事情。简单来说，用户不应该感受到 Effect 只执行一次（如在生产环境中）和执行 _挂载 → 清理 → 挂载_ 过程（如在开发环境中）之间的差异。
+
+下面提供一些常用的 Effect 应用模式。
+
+不要使用 refs 来防止触发 Effects
+
+在开发过程中，防止 Effects 触发两次的一个常见陷阱是使用 `ref` 来防止 Effect 运行多次。例如，你使用 `useRef` “修复”上面的错误：
+
+这使得你在开发过程中确实只看到了一次 `"✅ Connecting..."`，但其实并没有修复这个错误。
+
+当用户导航离开时，连接仍然没有关闭，当他们返回时，将创建一个新连接。随着用户在应用中导航，连接将不断堆积，就像“修复”之前一样。
+
+要修复错误，仅仅使 Effect 运行一次是不够的。Effect 需要在重新挂载后正常工作，这意味着需要像上面的解决方案一样清理连接。
+
+请参阅下面的示例，了解如何处理常见模式。
+
+控制非 React 小部件
+
+有时需要添加不是使用 React 编写的 UI 小部件。例如，假设您要在页面上添加一个地图组件。它有一个 `setZoomLevel()` 方法，您希望将缩放级别与 React 代码中的 `zoomLevel` 状态变量保持同步。Effect 看起来应该与下面类似：
+
+请注意，在这种情况下不需要清理。在开发中，React 将调用 Effect 两次，但这不是问题，这两次挂载时依赖项 `setZoomLevel` 都是相同的，所以即使执行两次 Effect，也不会造成任何影响。它可能会稍慢，但这没关系，因为在生产中不会进行不必要地重新挂载。
+
+某些 API 可能不允许您连续两次调用它们。例如，内置的 [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement) 元素的 [`showModal`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal) 方法如果您调用两次会抛出异常。此时实现清理函数并使其关闭对话框：
+
+在开发中，您的 Effect 将调用 `showModal()`，然后立即 `close()`，然后再次 `showModal()`。这与调用只一次 `showModal()` 的效果相同。也正如在生产环境中看到的那样。
+
+订阅事件
+
+如果 Effect 订阅了某些事件，清理函数应该退订这些事件：
+
+在开发中，您的 Effect 将调用 `addEventListener()`，然后立即 `removeEventListener()`，然后再次调用 `addEventListener()`，并使用相同的处理程序。因此，始终只有一个活动订阅。这具有与在生产中仅调用一次 `addEventListener()` 相同的用户可见行为。
+
+触发动画
+
+如果 Effect 对某些内容加入了动画，清理函数应将动画重置：
+
+在开发环境中，透明度由 `1` 变为 `0`，再变为 `1`。这与在生产环境中，直接将其设置为 `1` 具有相同的感知效果，如果你使用支持过渡的第三方动画库，你的清理函数应将时间轴重置为其初始状态。
+
+如果 Effect 将会获取数据，清理函数应该要么 [中止该数据的获取操作](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) 或忽略其结果：
+
+我们无法撤消已经发生的网络请求，但是清理函数应当确保获取数据的过程以及获取到的结果不会继续影响程序运行。如果 `userId` 从 `'Alice'` 变为 `'Bob'`，那么请确保 `Alice` 响应数据被忽略，即使它在 `'Bob'` 之后到达。
+
+**在开发环境中，浏览器调试工具的“网络”选项卡中会出现两个 fetch 请求。** 这是正常的。使用上述方法，第一个 Effect 将立即被清理，因此它的 `ignore` 变量将被设置为 `true`。因此，即使有额外的请求，由于 `if (!ignore)` 检查，它也不会影响程序状态。
+
+**在生产环境中，只会有一个请求。** 如果开发中的第二个请求让您感到困扰，最好的方法是使用去重请求并在组件之间缓存响应的解决方案：
+
+这不仅会改善开发体验，还会让您的应用程序感觉更快。例如，用户按下返回按钮时，不必等待某些数据再次加载，因为它将被缓存。您可以自己构建这样的缓存，也可以使用很多在 Effect 中手动加载数据的替代方法。
+
+在 Effects 中获取数据的好替代方案是什么？
+
+在 Effects 中编写 `fetch` 请求是一种 [流行的数据获取方式](https://www.robinwieruch.de/react-hooks-fetch-data/)，特别是在客户端应用中。然而，这是一种非常手动的方法，并且有显著的缺点：
+
+- **Effect 不能在服务端执行。** 这这意味着服务器最初传递的 HTML 不会包含任何数据。客户端的浏览器必须下载所有 JavaScript 脚本来渲染应用程序，然后才能加载数据——这并不高效。
+- **直接在 Effect 中获取数据容易产生网络瀑布（network waterfall）。** 首先渲染了父组件，它会获取一些数据并进行渲染；然后渲染子组件，接着子组件开始获取它们的数据。如果网络速度不够快，这种方式比同时获取所有数据要慢得多。
+- **直接在 Effect 中获取数据通常意味着无法预加载或缓存数据。** 例如，在组件卸载后然后再次挂载，那么它必须再次获取数据。
+- **这不是很符合人机交互原则（不方便）。** 如果你不想出现像 [条件竞争](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect) 之类的问题，那么你需要编写更多的样板代码。
+
+以上所列出来的缺点并不是 React 特有的。在任何框架或者库上的组件挂载过程中获取数据，都会遇到这些问题。与路由一样，要做好数据获取并非易事，因此我们推荐以下方法：
+
+- **如果您使用 [框架](/learn/start-a-new-react-project#production-grade-react-frameworks)，请使用其内置的数据获取机制。** 现代 React 框架内置了高效的数据获取机制，避免了上述缺点。
+- **否则，考虑使用或构建客户端缓存。** 流行的开源解决方案包括 [React Query](https://tanstack.com/query/latest)、[useSWR](https://swr.vercel.app/) 和 [React Router 6.4+](https://beta.reactrouter.com/en/main/start/overview)。您也可以构建自己的解决方案，在这种情况下，你可以在幕后使用 Effect，但是请注意添加用于删除重复请求、缓存响应和避免网络瀑布的逻辑（通过预加载数据或将数据需求提升到路由）。
+
+如果这两种方法都不适合您，您仍然可以继续在 Effects 中直接获取数据。
+
+发送分析
+
+考虑这段代码，它在页面访问时发送分析事件：
+
+在开发中，每个 URL 的 `logVisit` 将被调用两次，因此您可能会想尝试修复它。**我们建议保持此代码不变。** 就像之前的示例一样，运行一次和运行两次之间没有 *用户可见* 行为差异。从实际的角度来看，`logVisit` 在开发中不应做任何事情，因为您不希望开发机器上的日志影响生产指标。每当您保存其文件时，组件都会重新挂载，因此在开发中无论如何都会记录额外的访问。
+
+**在生产中，不会有重复的访问日志。**
+
+要调试您发送的分析事件，您可以将应用部署到一个运行在生产模式下的暂存环境，或暂时选择退出 [严格模式](/reference/react/StrictMode) 及其仅限于开发的重新挂载检查。您还可以从路由更改事件处理程序而不是 Effects 发送分析。对于更精确的分析，[交叉观察者](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 可以帮助跟踪哪些组件在视口中，以及它们保持可见的时间。
+
+不是一个 Effect：初始化应用程序
+
+某些逻辑应该只在应用程序启动时运行一次。您可以将其放在组件外部：
+
+这保证了这样的逻辑只在浏览器加载页面后运行一次。
+
+不是一个 Effect：购买产品
+
+有时，即使您编写了清理函数，也无法防止运行 Effect 两次的用户可见后果。例如，也许您的 Effect 发送一个 POST 请求来购买产品：
+
+您不希望购买该产品两次。然而，这也是您不应该将此逻辑放在 Effect 中的原因。假设用户转到另一页面，然后按下返回？您的 Effect 将再次运行。您不想在用户 *访问* 页面时购买产品；您希望在用户 *点击* 购买按钮时购买。
+
+购买不是由渲染引起的；而是由特定的交互引起的。它应该仅在用户按下按钮时运行。**删除 Effect 并将您的 `/api/buy` 请求移动到购买按钮事件处理程序中：**
+
+**这说明如果重新挂载破坏了您的应用逻辑，通常会暴露出现有的错误。** 从用户的角度来看，访问页面不应与访问页面、点击链接然后按返回查看页面之间有所不同。React 通过在开发中重新挂载组件来验证您的组件是否遵循这一原则。
+
+将所有内容整合在一起
+
+这个游乐场可以帮助您“感受” Effects 在实践中的工作方式。
+
+这个示例使用 [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) 来安排在 Effect 运行三秒后显示输入文本的控制台日志。清理函数取消挂起的超时。首先按下“挂载组件”：
+
+您会看到三条日志：`Schedule "a" log`、`Cancel "a" log` 和 `Schedule "a" log` 再次。三秒后，还会有一条日志显示 `a`。正如您之前所学，额外的调度/取消对是因为 React 在开发中重新挂载组件以验证您是否正确实现了清理。
+
+现在编辑输入以说 `abc`。如果您足够快，您会看到 `Schedule "ab" log` 紧接着 `Cancel "ab" log` 和 `Schedule "abc" log`。**React 总是清理上一个渲染的 Effect，然后再执行下一个渲染的 Effect。** 这就是为什么即使您快速输入，最多也只会调度一个超时。多次编辑输入并观察控制台，以感受 Effects 是如何被清理的。
+
+在输入中键入一些内容，然后立即按下“卸载组件”。注意，卸载会清理最后一个渲染的 Effect。在这里，它在超时有机会触发之前清理了最后的超时。
+
+最后，编辑上面的组件，并注释掉清理函数，以便超时不被取消。尝试快速输入 `abcde`。您预期在三秒后会发生什么？`console.log(text)` 是否会打印 *最新* 的 `text` 并产生五个 `abcde` 日志？试试看以检查您的直觉！
+
+三秒后，您应该看到一系列日志（`a`、`ab`、`abc`、`abcd` 和 `abcde`），而不是五个 `abcde` 日志。**每个 Effect “捕获” 其对应渲染的 `text` 值。** 不管 `text` 状态如何变化：来自渲染的 Effect 中的 `text = 'ab'` 将始终看到 `'ab'`。换句话说，每个渲染的 Effects 彼此隔离。如果您想了解这是如何运作的，您可以阅读 [闭包](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)。
+
+每次渲染都有自己的 Effects
+
+您可以将 `useEffect` 视为“将”一段行为附加到渲染输出。考虑这个 Effect：
+
+我们来看看当用户在应用中导航时会发生什么。
+
+**Effect 也是渲染输出的一部分。** 第一次渲染的 Effect 变成：
+
+React 运行此 Effect，连接到 `'general'` 聊天室。
+
+使用相同的依赖项重新渲染
+
+假设 `<ChatRoom roomId="general" />` 重新渲染。JSX 输出是相同的：
+
+React 看到渲染输出没有改变，所以它不会更新 DOM。
+
+第二次渲染的 Effect 看起来是这样的：
+
+React 将第二次渲染的 `['general']` 与第一次渲染的 `['general']` 进行比较。**因为所有依赖项都是相同的，React *忽略* 第二次渲染的 Effect。** 它从未被调用。
+
+使用不同的依赖项重新渲染
+
+然后，用户访问 `<ChatRoom roomId="travel" />`。这次，组件返回不同的 JSX：
+
+React 更新 DOM，将 `"Welcome to general"` 改为 `"Welcome to travel"`。
+
+第三次渲染的 Effect 看起来是这样的：
+
+React 将第三次渲染的 `['travel']` 与第二次渲染的 `['general']` 进行比较。一个依赖项不同：`Object.is('travel', 'general')` 为 `false`。Effect 无法被跳过。
+
+**在 React 应用第三次渲染的 Effect 之前，它需要清理上一个 Effect。** 第二次渲染的 Effect 被跳过，因此 React 需要清理第一次渲染的 Effect。如果您向上滚动到第一次渲染，您会看到它的清理调用在使用 `createConnection('general')` 创建的连接上调用 `disconnect()`。这将应用程序从 `'general'` 聊天室断开。
+
+之后，React 运行第三次渲染的 Effect。它连接到 `'travel'` 聊天室。
+
+卸载
+
+最后，假设用户导航离开，`ChatRoom` 组件卸载。React 运行最后一次 Effect 的清理函数。最后一次 Effect 来自第三次渲染。第三次渲染的清理销毁了 `createConnection('travel')` 连接。因此，应用程序断开了与 `'travel'` 房间的连接。
+
+仅限开发的行为
+
+当 [严格模式](/reference/react/StrictMode) 打开时，React 在挂载后重新挂载每个组件一次（状态和 DOM 被保留）。这 [帮助您发现需要清理的 Effects](#step-3-add-cleanup-if-needed) 并及早暴露出错误，例如竞争条件。此外，React 会在您开发时保存文件时重新挂载 Effects。所有这些行为都是仅限开发的。
+
+- 与事件不同，Effects 是由渲染本身引起的，而不是由特定交互引起的。
+- Effects 允许您将组件与某些外部系统（第三方 API、网络等）同步。
+- 默认情况下，Effects 在每次渲染后运行（包括初始渲染）。
+- 如果所有依赖项的值与上次渲染时相同，React 将跳过 Effect。
+- 您无法“选择”您的依赖项。它们由 Effect 内的代码决定。
+- 空依赖数组 (`[]`) 对应于组件“挂载”，即添加到屏幕上。
+- 在严格模式下，React 在开发中将组件挂载两次，以压力测试您的 Effects。
+- 如果您的 Effect 因重新挂载而中断，您需要实现一个清理函数。
+- React 会在 Effect 下次运行之前以及在卸载时调用您的清理函数。
+
+在挂载时聚焦字段
+
+在这个示例中，表单渲染了一个 `<MyInput />` 组件。
+
+使用输入的 [`focus()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus) 方法使 `MyInput` 在出现在屏幕上时自动获得焦点。已经有一个注释掉的实现，但它并没有完全工作。找出它为什么不起作用，并修复它。（如果您熟悉 `autoFocus` 属性，请假装它不存在：我们正在从头实现相同的功能。）
+
+要验证您的解决方案是否有效，请按“显示表单”，并验证输入是否获得焦点（变为高亮并且光标位于内部）。按“隐藏表单”再按一次“显示表单”。验证输入再次被高亮。
+
+`MyInput` 应该只在 _挂载_ 时获得焦点，而不是在每次渲染后。要验证行为是否正确，按“显示表单”，然后反复按“将其变为大写”复选框。点击复选框不应使上面的输入获得焦点。
+
+在渲染期间调用 `ref.current.focus()` 是错误的，因为它是一个 *副作用*。副作用应该放在事件处理程序内，或者用 `useEffect` 声明。在这种情况下，副作用是 _由于_ 组件的出现引起的，而不是由任何特定的交互引起的，因此将其放在 Effect 中是有意义的。
+
+要修复错误，将 `ref.current.focus()` 调用包装在 Effect 声明中。然后，为确保该 Effect 仅在挂载时运行，而不是在每次渲染后运行，请向其添加空的 `[]` 依赖项。
+```
